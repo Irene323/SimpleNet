@@ -1,0 +1,89 @@
+Epoch number 0
+ Current loss 0.427583258957876
+
+Epoch number 1
+ Current loss 0.25967304052182416
+
+Epoch number 2
+ Current loss 0.1564182958812179
+
+Epoch number 3
+ Current loss 0.10720803172820631
+
+Epoch number 4
+ Current loss 0.09407611571197562
+
+Epoch number 5
+ Current loss 0.06765960880336078
+
+Epoch number 6
+ Current loss 0.04427374333198018
+
+Epoch number 7
+ Current loss 0.047289817111895366
+
+Epoch number 8
+ Current loss 0.04227306069258381
+
+Epoch number 9
+ Current loss 0.025574028196142
+
+Epoch number 10
+ Current loss 0.02215510447345236
+
+Epoch number 11
+ Current loss 0.02831369074718917
+
+Epoch number 12
+ Current loss 0.02423964648452752
+
+Epoch number 13
+ Current loss 0.018913830027860755
+
+Epoch number 14
+ Current loss 0.021458421658505412
+
+Epoch number 15
+ Current loss 0.011207432968213278
+
+Epoch number 16
+ Current loss 0.01352097607929917
+
+Epoch number 17
+ Current loss 0.012160355767563863
+
+Epoch number 18
+ Current loss 0.010132744481020113
+
+Epoch number 19
+ Current loss 0.012983347245437257
+
+Epoch number 20
+ Current loss 0.010378717587274664
+
+Epoch number 21
+ Current loss 0.009361167186323334
+
+Epoch number 22
+ Current loss 0.010822635352173272
+
+Epoch number 23
+ Current loss 0.012348229120321134
+
+Epoch number 24
+ Current loss 0.008808463899528279
+
+Epoch number 25
+ Current loss 0.006620127510498551
+
+Epoch number 26
+ Current loss 0.004483868061181377
+
+Epoch number 27
+ Current loss 0.007177330005694838
+
+Epoch number 28
+ Current loss 0.0053365677321220144
+
+Epoch number 29
+ Current loss 0.006668449346633519
