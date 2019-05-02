@@ -9,14 +9,15 @@ from torch.utils.data import DataLoader, Dataset
 from triplet_net import Net, NetDataset, Net2
 
 class Config():
-    patch_dir = 'D:\\dataset\\liberty\\'
+    margin = 11.3137
+    patch_dir = '/home/yirenli/data/liberty/'
     read_dir = '../resources/merge_200000_train.txt'
-    write_dir = '../out/net2_margin_2_merge_200000_epoch30.pkl'
+    write_dir = '../out/batchnorm_tanh_margin{}/batchnorm_tanh_margin{}_merge_200000_train_epoch30.pkl'.format(margin, margin)
     train_number_epochs = 30
     patch_len = 43515
 
 class TripletLoss(torch.nn.Module):
-    def __init__(self, margin=2.0):
+    def __init__(self, margin=Config.margin):
         super(TripletLoss, self).__init__()
         self.margin = margin
 
@@ -59,15 +60,16 @@ if __name__ == '__main__':
             loss += float(loss_triplet)
             loss_triplet.backward()
             optimizer.step()
-            if i % 96 == 95:
-                print((int)(i / 96))
+            if i % 256 == 255:
+                print((int)(i / 256))
             if (i == ((int)(Config.patch_len/16))): #((i % Config.patch_len) == (Config.patch_len - 1)):
                 iteration_number += Config.patch_len
                 print("Epoch number {}\n Current loss {}\n".format(epoch, loss / (i + 1)))
                 counter.append(iteration_number)
                 loss_history.append(loss / (i + 1))
-                torch.save(net.state_dict(), ('../out/net2_margin_2_merge_200000_epoch%d.pkl' % (epoch)))
+                torch.save(net.state_dict(), ('../out/batchnorm_tanh_margin{}/batchnorm_tanh_margin{}_merge_200000_train_epoch{}.pkl'.format(Config.margin, Config.margin, epoch)))
 
     plt.plot(counter, loss_history)
-    plt.show()
+    # plt.show()
+    plt.savefig('../out/batchnorm_tanh_margin{}/batchnorm_tanh_margin{}_loss.jpg'.format(Config.margin, Config.margin))
     torch.save(net.state_dict(), Config.write_dir)
