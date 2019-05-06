@@ -1,6 +1,4 @@
-import cv2
 import matplotlib.pyplot as plt
-import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -9,7 +7,7 @@ from torch.utils.data import DataLoader, Dataset
 from triplet_net import Net, NetDataset, Net2
 
 class Config():
-    margin = 11.3137
+    margin = 11
     patch_dir = '/home/yirenli/data/liberty/'
     read_dir = '../resources/merge_200000_train.txt'
     write_dir = '../out/batchnorm_tanh_margin{}/batchnorm_tanh_margin{}_merge_200000_train_epoch30.pkl'.format(margin, margin)
@@ -17,15 +15,15 @@ class Config():
     patch_len = 43515
 
 class TripletLoss(torch.nn.Module):
-    def __init__(self, margin=Config.margin):
+    def __init__(self, margin=11.3137):
         super(TripletLoss, self).__init__()
         self.margin = margin
 
     # The distance from the baseline (anchor) input to the positive (truthy) input is minimized,
     # and the distance from the baseline (anchor) input to the negative (falsy) input is maximized.
     def forward(self, anchor, positive, negative, size_average=True):
-        distance_positive = (anchor - positive).pow(2).sum(1)  # .pow(.5)
-        distance_negative = (anchor - negative).pow(2).sum(1)  # .pow(.5)
+        distance_positive = (anchor - positive).pow(2).sum(1)**0.5
+        distance_negative = (anchor - negative).pow(2).sum(1)**0.5
         # print('p:',distance_positive)
         # print('n:',distance_negative)
         losses = F.relu(distance_positive - distance_negative + self.margin)

@@ -5,12 +5,12 @@ from triplet_net import Net, NetDataset, Net2
 
 
 class Config():
-    margin = 1
+    margin = 11
     patch_dir = '/home/yirenli/data/liberty/'
     read_dir = '../resources/merge_200000_test.txt'
-    pkl_dir = '../out/net2_tanh_margin{}/net2_tanh_margin_{}_merge_200000_train_epoch30.pkl'.format(margin, margin)
-    out_dist_dir = '../out/txt/net2_tanh_margin_{}_merge_200000_test_dist.txt'.format(margin)
-    out_desc_dir = '../out/txt/net2_tanh_margin_{}_merge_200000_test_desc.txt'.format(margin)
+    pkl_dir = '../out/batchnorm_tanh_margin{}/batchnorm_tanh_margin{}_merge_200000_train_epoch30.pkl'.format(margin, margin)
+    out_dist_dir = '../out/txt/batchnorm_tanh_margin{}_merge_200000_test_dist.txt'.format(margin)
+    out_desc_dir = '../out/txt/batchnorm_tanh_margin{}_merge_200000_test_desc.txt'.format(margin)
 
 
 if __name__ == '__main__':
@@ -26,7 +26,7 @@ if __name__ == '__main__':
         with open(Config.out_desc_dir, 'w') as wdesc:
             for i, data in enumerate(test_dataloader, 0):
                 img0, img1, img2 = data
-                # img0, img1, img2 = img0.cuda(), img1.cuda(), img2.cuda()
+                img0, img1, img2 = img0.cuda(), img1.cuda(), img2.cuda()
 
                 output1, output2, output3 = net(img0, img1, img2)
 
@@ -39,9 +39,6 @@ if __name__ == '__main__':
                 wdesc.write('{}\n{}\n{}\n{}\n'.format(i, output1.cpu().detach().numpy(), output2.cpu().detach().numpy(),
                                                       output3.cpu().detach().numpy()))
 
-                # wdesc.write('{}\n{}\n{}\n{}\n'.format(i, output1.detach().numpy(), output2.detach().numpy(),
-                #                                       output3.detach().numpy()))
-
                 distance_positive = (output1 - output2).pow(2).sum(1)
                 distance_negative = (output1 - output3).pow(2).sum(1)
                 #
@@ -52,9 +49,6 @@ if __name__ == '__main__':
 
                 wdist.write('{} {}\n'.format(distance_positive.cpu().detach().numpy()[0],
                                              distance_negative.cpu().detach().numpy()[0]))
-
-                # wdist.write('{} {}\n'.format(distance_positive.detach().numpy()[0],
-                #                              distance_negative.detach().numpy()[0]))
 
                 # # 1 for match, 0 for nonmatch
                 # if (distance_positive < 500):
@@ -72,8 +66,9 @@ if __name__ == '__main__':
                     countloss+=1
     print(countloss)
     # net2 tanh margin      test error
+    # 1                     349
     # 2                     378
-    # 1                     414
-    # 11                    5000
-    # 5                     308
-    # 7                     1458
+    # 5                     368
+    # 7                     442
+    # 11                    439
+    #batch 11               928
