@@ -3,57 +3,80 @@ import numpy as np
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset
-from multiprocessing import Lock
+# from multiprocessing import Lock
 
-lock = Lock()
+def load_image(p,conf):
+    imageID0 = int(int(p) / 256)  # >> 8
+    patchID0 = int(p) % 256  # & b'11111111
+    image_dir0 = conf.patch_dir + ('patches%04d.bmp' % (imageID0))
+    img0 = cv2.imread(image_dir0)
+    img0 = img0[(int(patchID0 / 16) * 64):(int(patchID0 / 16) * 64 + 64),
+           ((patchID0 % 16) * 64):((patchID0 % 16) * 64 + 64)]
+    img0l = cv2.cvtColor(img0, cv2.COLOR_BGR2GRAY)
+    img0l = np.array(img0l, dtype=np.float32)
+    npimg0l = img0l.reshape((1, 64, 64))
+    return npimg0l
+
+# lock = Lock()
 class NetDataset(Dataset):
     def __init__(self, conf):
+        self.dataset = {}
         self.i = -1
         self.patches = []
         self.conf = conf
         with open(self.conf.read_dir, 'r') as f:
             for l in f:
+                if len(self.patches)>=self.conf.patch_len:
+                    break
                 a = l.strip('\n').split(' ')
                 line = [a[0], a[1], a[2]]
                 self.patches.append(line)
+        for p in self.patches:
+            if not p[0] in self.dataset.keys():
+                self.dataset[p[0]] = load_image(p[0],self.conf)
+            if not p[1] in self.dataset.keys():
+                self.dataset[p[1]] = load_image(p[1],self.conf)
+            print(self.dataset.__len__())
         # print(json.dumps(patches,indent=4))
         # print(np.array(self.patches))
 
     def __getitem__(self, item):
         # print(self.patches[self.i])
-        lock.acquire()
+        # lock.acquire()
         # print(lock)
         self.i += 1
         if self.i == len(self.patches):
             self.i = 0
-        lock.release()
-        imageID0 = int(int(self.patches[self.i][0]) / 256)  # >> 8
-        patchID0 = int(self.patches[self.i][0]) % 256  # & b'11111111
-        image_dir0 = self.conf.patch_dir + ('patches%04d.bmp' % (imageID0))
+        # lock.release()
 
-        imageID1 = int(int(self.patches[self.i][1]) / 256)
-        patchID1 = int(self.patches[self.i][1]) % 256
-        image_dir1 = self.conf.patch_dir + ('patches%04d.bmp' % (imageID1))
-
-        img0 = cv2.imread(image_dir0)
-        img0 = img0[(int(patchID0 / 16) * 64):(int(patchID0 / 16) * 64 + 64),
-               ((patchID0 % 16) * 64):((patchID0 % 16) * 64 + 64)]
-
-        img1 = cv2.imread(image_dir1)
-        img1 = img1[(int(patchID1 / 16) * 64):(int(patchID1 / 16) * 64 + 64),
-               ((patchID1 % 16) * 64):((patchID1 % 16) * 64 + 64)]
-
-        img0l = cv2.cvtColor(img0, cv2.COLOR_BGR2GRAY)
-        img0l = np.array(img0l, dtype=np.float32)
-
-        img1l = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
-        img1l = np.array(img1l, dtype=np.float32)
-
-        npimg0l = img0l.reshape((1, 64, 64))  # xq
-        npimg1l = img1l.reshape((1, 64, 64))  # more batches 16/32
+        # imageID0 = int(int(self.patches[self.i][0]) / 256)  # >> 8
+        # patchID0 = int(self.patches[self.i][0]) % 256  # & b'11111111
+        # image_dir0 = self.conf.patch_dir + ('patches%04d.bmp' % (imageID0))
+        #
+        # imageID1 = int(int(self.patches[self.i][1]) / 256)
+        # patchID1 = int(self.patches[self.i][1]) % 256
+        # image_dir1 = self.conf.patch_dir + ('patches%04d.bmp' % (imageID1))
+        #
+        # img0 = cv2.imread(image_dir0)
+        # img0 = img0[(int(patchID0 / 16) * 64):(int(patchID0 / 16) * 64 + 64),
+        #        ((patchID0 % 16) * 64):((patchID0 % 16) * 64 + 64)]
+        #
+        # img1 = cv2.imread(image_dir1)
+        # img1 = img1[(int(patchID1 / 16) * 64):(int(patchID1 / 16) * 64 + 64),
+        #        ((patchID1 % 16) * 64):((patchID1 % 16) * 64 + 64)]
+        #
+        # img0l = cv2.cvtColor(img0, cv2.COLOR_BGR2GRAY)
+        # img0l = np.array(img0l, dtype=np.float32)
+        #
+        # img1l = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
+        # img1l = np.array(img1l, dtype=np.float32)
+        #
+        # npimg0l = img0l.reshape((1, 64, 64))  # xq
+        # npimg1l = img1l.reshape((1, 64, 64))  # more batches 16/32
 
         # print(np.array([int(self.patches[self.i][2])], dtype=np.float32))
-        return npimg0l, npimg1l, torch.from_numpy(np.array([int(self.patches[self.i][2])], dtype=np.float32))
+        # return npimg0l, npimg1l, torch.from_numpy(np.array([int(self.patches[self.i][2])], dtype=np.float32))
+        return self.dataset[self.patches[self.i][0]], self.dataset[self.patches[self.i][1]], torch.from_numpy(np.array([int(self.patches[self.i][2])], dtype=np.float32))
 
     def __len__(self):
         # print(len(self.patches))

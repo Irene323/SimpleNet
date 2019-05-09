@@ -28,7 +28,7 @@ with open('../resources/siamese_200000.txt', 'r') as f:
 with open('../resources/siamese_200000_train.txt', 'w') as wtrain:
     with open('../resources/siamese_200000_test.txt', 'w') as wtest:
         for j in range(0, len(data)):
-            if j<100000:
+            if j<195000:
                 wtrain.write(data[j])
-            elif j<105000:
+            else:
                 wtest.write(data[j])

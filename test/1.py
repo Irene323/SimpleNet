@@ -17,18 +17,21 @@
 #
 # cv2.imwrite('sift_keypoints.jpg', img)
 
-import torch
-import torch.nn.functional as F
-import numpy as np
+# import torch
+# import torch.nn.functional as F
+# import numpy as np
+#
+# input1 = torch.tensor([[1., 2.], [3., 4.]])
+# print(input1)
+# input2 = torch.tensor([[0., 3.], [5., 1.]])
+# print(input2)
+# euclidean_distance = F.pairwise_distance(input1, input2)
+# print(euclidean_distance)
+# print(input1-input2)
+# print((input1 - input2).pow(2))
+# print((input1 - input2).pow(2).sum(axis=1, dim=[2,1], keepdim=True, dtype=np.float32))
+# distance_positive = (input1 - input2).pow(2).sum(1).pow(0.5)
+# print(distance_positive)
 
-input1 = torch.tensor([[1., 2.], [3., 4.]])
-print(input1)
-input2 = torch.tensor([[0., 3.], [5., 1.]])
-print(input2)
-euclidean_distance = F.pairwise_distance(input1, input2)
-print(euclidean_distance)
-print(input1-input2)
-print((input1 - input2).pow(2))
-print((input1 - input2).pow(2).sum(axis=1, dim=[2,1], keepdim=True, dtype=np.float32))
-distance_positive = (input1 - input2).pow(2).sum(1).pow(0.5)
-print(distance_positive)
+write_dir = '../out/siamese_margin{}/siamese_margin{}_200000_train_epoch{}.pkl'
+print(write_dir.rstrip('epoch{}.pkl'))
