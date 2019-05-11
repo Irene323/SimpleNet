@@ -8,11 +8,11 @@ from torch.utils.data import DataLoader, Dataset
 from siamese_net import Net, NetDataset, Net2
 
 class Config():
-    margin = 100
+    margin = 10
     patch_dir = '/home/yirenli/data/liberty/'
     read_dir = '../resources/siamese_200000_train.txt'
     write_dir = '../out/siamese_margin{}/siamese_margin{}_200000_train_epoch{}.pkl'
-    # pkl_dir = '../out/siamese_margin11.3137/siamese_margin11.3137_200000_train_epoch100.pkl'
+    # pkl_dir = '../out/siamese_margin100/siamese_margin100_200000_train_epoch200.pkl'
     write_bool = True
     train_number_epochs = 200
     patch_len = 195000
@@ -89,5 +89,5 @@ if __name__ == '__main__':
 
     plt.plot(counter, loss_history)
     # plt.show()
-    plt.savefig(Config.write_dir.rstrip('epoch{}.pkl')+'loss.jpg'.format(Config.margin, Config.margin))
+    plt.savefig((Config.write_dir.rstrip('epoch{}.pkl')+'loss.jpg').format(Config.margin, Config.margin))
     torch.save(net.state_dict(), Config.write_dir.format(Config.margin, Config.margin, Config.train_number_epochs))
